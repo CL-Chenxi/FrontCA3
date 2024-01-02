@@ -1,0 +1,86 @@
+﻿@page "/orderitemmanagement"
+@using FrontCA3.Data
+@using FrontCA3.Components
+@inherits OrderItemComponent
+
+
+<h1>Order Item Management</h1>
+
+<div style="width: 100%; display: table;">
+    <div style="display: table-row;">
+        <div style="width: 50%; display: table-cell;">
+            <h3>List Items</h3>
+            <EditForm Model="@OrderItemDTO" OnValidSubmit="Fetch">
+                <label for="cid">Enter Order ID to fetch items</label>
+                <InputNumber id="cid" @bind-Value="@OrderId" />
+                <button class="btn btn-primary" type="submit">Search</button>
+            </EditForm>
+            @if (OrderItemList != null)
+            {
+                <table class="table table-sm table-striped table-bordered m-2">
+                    <tr><th>Item ID</th><th>Order ID</th><th>Product Name</th><th>Quantity</th><th>Unit Price</th></tr>
+                    @foreach (var item in OrderItemList)
+                    {
+                        <tr>
+                            <td>@item.OrderItemId</td>
+                            <td>@item.OrderId</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.UnitPrice</td>
+                        </tr>
+                    }
+                </table>
+
+            }
+        </div>
+        <div style="display: table-cell; margin-left:10%; vertical-align=top">
+            <h3>Edit Items</h3>
+            <EditForm Model="@EditOrderItemFormDTO" OnValidSubmit="Search">
+                <table>
+                    <tr><td><label for="cid">Item ID</label></td><td><InputNumber id="cid" @bind-Value="@OrderItemId" /></td></tr>
+                </table>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </EditForm>
+            @if (displayable)
+            {
+                <p>Order Item found</p>
+                <p>Id: @OrderItemId</p>
+                <EditForm Model="@EditOrderItemFormDTO" OnValidSubmit="Update">
+                    <table>
+                        <tr><td><label for="cid">Order ID</label></td><td><InputNumber id="cid" @bind-Value="@EditOrderItemFormDTO.OrderId" /></td></tr>
+                        <tr><td><label for="date">Product Name</label></td><td><InputText id="date" @bind-Value="@EditOrderItemFormDTO.ProductName" /></td></tr>
+                        <tr><td><label for="date">Quantity</label></td><td><InputNumber id="date" @bind-Value="@EditOrderItemFormDTO.Quantity" /></td></tr>
+                        <tr><td><label for="date">Unit Price</label></td><td><InputNumber id="date" @bind-Value="@EditOrderItemFormDTO.UnitPrice" /></td></tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </EditForm>
+                <EditForm Model="@EditOrderItemFormDTO" OnValidSubmit="Delete">
+                    <button class="btn btn-primary" type="submit">Delete</button>
+                </EditForm>
+                @if (updateFeedback.Length != 0)
+                {
+                    <p>@updateFeedback</p>
+                }
+            }
+            <h3>Create Item</h3>
+            <EditForm Model="@CreateOrderItemFormDTO" OnValidSubmit="Create">
+                <table>
+                    <tr><td><label for="cid">Order ID</label></td><td><InputNumber id="cid" @bind-Value="@CreateOrderItemFormDTO.OrderId" /></td></tr>
+                    <tr><td><label for="date">Product Name</label></td><td><InputText id="date" @bind-Value="@CreateOrderItemFormDTO.ProductName" /></td></tr>
+                    <tr><td><label for="date">Quantity</label></td><td><InputNumber id="date" @bind-Value="@CreateOrderItemFormDTO.Quantity" /></td></tr>
+                    <tr><td><label for="date">Unit Price</label></td><td><InputNumber id="date" @bind-Value="@CreateOrderItemFormDTO.UnitPrice" /></td></tr>
+                </table>
+                <button class="btn btn-primary" type="submit">Create</button>
+            </EditForm>
+            @if (creationFeedback.Length != 0)
+            {
+                <p>@creationFeedback</p>
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+}

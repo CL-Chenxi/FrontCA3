@@ -1,0 +1,77 @@
+﻿@page "/ordermanagement"
+@using FrontCA3.Data
+@using FrontCA3.Components
+@inherits OrderComponent
+
+<h1>Order Management</h1>
+
+<div style="width: 100%; display: table;">
+    <div style="display: table-row;">
+        <div style="width: 50%; display: table-cell;">
+            <h3>List Orders</h3>
+            <EditForm Model="@OrderDTO" OnValidSubmit="Fetch">
+                <label for="cid">Enter Customer ID or leave 0 to list all orders</label>
+                <InputNumber id="cid" @bind-Value="@CustomerId"/>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </EditForm>
+            @if(OrderList != null){
+                <table class="table table-sm table-striped table-bordered m-2">
+                    <tr><th>Order ID</th><th>Customer ID</th><th>Order Date</th></tr>
+                    @foreach (var item in OrderList)
+                    {
+                        <tr>
+                            <td>@item.OrderId</td>
+                            <td>@item.CustomerId</td>
+                            <td>@item.OrderDate</td>
+                        </tr>
+                    }
+                </table>
+
+            }
+        </div>
+        <div style="display: table-cell; margin-left:10%; vertical-align=top">
+            <h3>Edit Order</h3>
+            <EditForm Model="@EditOrderFormDTO" OnValidSubmit="Search">
+                <table>
+                    <tr><td><label for="cid">Order ID</label></td><td><InputNumber id="cid" @bind-Value="@OrderId" /></td></tr>
+                </table>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </EditForm>
+            @if (displayable)
+            {
+                <p>Order found</p>
+                <p>Id: @OrderId</p>
+                <EditForm Model="@EditOrderFormDTO" OnValidSubmit="Update">
+                    <table>
+                        <tr><td><label for="cid">Customer ID</label></td><td><InputNumber id="cid" @bind-Value="@EditOrderFormDTO.CustomerId" /></td></tr>
+                        <tr><td><label for="date">Creation Date</label></td><td><InputDate id="date" @bind-Value="@EditOrderFormDTO.OrderDate" /></td></tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </EditForm>
+                <EditForm Model="@EditOrderFormDTO" OnValidSubmit="Delete">
+                    <button class="btn btn-primary" type="submit">Delete</button>
+                </EditForm>
+                @if (updateFeedback.Length != 0)
+                {
+                    <p>@updateFeedback</p>
+                }
+            }
+            <h3>Create Order</h3>
+            <EditForm Model="@CreateOrderFormDTO" OnValidSubmit="Create">
+                <table>
+                    <tr><td><label for="cid">Customer ID</label></td><td><InputNumber id="cid" @bind-Value="@CreateOrderFormDTO.CustomerId" /></td></tr>
+                    <tr><td><label for="date">Creation Date</label></td><td><InputDate id="date" @bind-Value="@CreateOrderFormDTO.OrderDate" /></td></tr>
+                </table>
+                <button class="btn btn-primary" type="submit">Create</button>
+            </EditForm>
+            @if (creationFeedback.Length != 0)
+            {
+                <p>@creationFeedback</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

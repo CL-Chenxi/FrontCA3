@@ -1,0 +1,94 @@
+﻿@page "/customermanagement"
+@using FrontCA3.Data
+@using FrontCA3.Components
+@inherits CustomerComponent
+
+<h1>Customer Management</h1>
+
+<div style="width: 100%; display: table;">
+    <div style="display: table-row;">
+        <div style="width: 50%; display: table-cell;">
+        <h3>Customer List</h3>
+
+        @if (_customerDataList != null)
+        {
+            <table class="table table-sm table-striped table-bordered m-2">
+                <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Date of Birth</th><th>Annual Spend</th></tr>
+                @foreach (var item in _customerDataList)
+                {
+                    <tr>
+                        <td>@item.CustomerId</td>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td>@item.DateOfBirth</td>
+                        <td>@item.AnnualSpend</td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>Loading data...</p>
+        }
+
+    </div>
+        <div style="display: table-cell; margin-left:10%; vertical-align=top">
+        <h3>Edit Customer</h3>
+        <EditForm Model="@EditCustomerDTO" OnValidSubmit="Search">
+            <label for="cid">Id</label>
+            <InputNumber id="cid" @bind-Value="CustomerSearchId" />
+            <button class="btn btn-primary" type="submit">Search</button>
+        </EditForm>
+        @if (displayable)
+        {
+            <p>Customer Found:</p>
+            <p>Id: @CustomerSearchId</p>
+            <EditForm Model="@EditCustomerDTO" OnValidSubmit="Update">
+                <table>
+                    <tr><td><label for="fname">First Name</label></td><td><InputText id="fname" @bind-Value="EditCustomerDTO.FirstName" /></td></tr>
+                    <tr><td><label for="lname">Last Name</label></td><td><InputText id="lname" @bind-Value="EditCustomerDTO.LastName" /></td></tr>
+                    <tr><td><label for="dob">Date of Birth</label></td><td><InputDate id="dob" @bind-Value="EditCustomerDTO.DateOfBirth" /></td></tr>
+                    <tr><td><label for="spend">Annual Spend</label></td><td><InputNumber id="spend" @bind-Value="EditCustomerDTO.AnnualSpend" /></td></tr>
+                </table>
+                <button class="btn btn-primary" type="submit">Update</button>
+            </EditForm>
+            <EditForm Model="@EditCustomerDTO" OnValidSubmit="Delete">
+                <button class="btn btn-primary" type="submit">Delete</button>
+            </EditForm>
+            @if (feedbackUpdate.Length != 0)
+            {
+                <p>@feedbackUpdate</p>
+            }
+        }
+        <h3>Create new Customer</h3>
+        <EditForm Model="@CreateCustomerDTO" OnValidSubmit="Create">
+            <table>
+                <tr><td><label for="fname">First Name</label></td><td><InputText id="fname" @bind-Value="CreateCustomerDTO.FirstName" /></td></tr>
+                <tr><td><label for="lname">Last Name</label></td><td><InputText id="lname" @bind-Value="CreateCustomerDTO.LastName" /></td></tr>
+                <tr><td><label for="dob">Date of Birth</label></td><td><InputDate id="dob" @bind-Value="CreateCustomerDTO.DateOfBirth" /></td></tr>
+                <tr><td><label for="spend">Annual Spend</label></td><td><InputNumber id="spend" @bind-Value="CreateCustomerDTO.AnnualSpend" /></td></tr>
+            </table>
+            <button class="btn btn-primary" type="submit">Create</button>
+            @if (feedbackCreation.Length != 0)
+            {
+                <p>@feedbackCreation</p>
+            }
+        </EditForm>
+    </div>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<CustomerDto> _customerDataList;
+    
+
+    [Inject]
+    private CustomerService ApiService { get; set; }
+
+    //fetch data on page load
+    protected override async Task OnInitializedAsync()
+    {
+        _customerDataList = await ApiService.GetCustomersList<CustomerDto>();
+    }
+
+}
